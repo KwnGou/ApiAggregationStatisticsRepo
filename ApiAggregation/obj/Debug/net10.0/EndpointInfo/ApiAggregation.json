@@ -1,0 +1,245 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "ApiAggregation",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/aggregate": {
+      "get": {
+        "tags": [
+          "Aggregation"
+        ],
+        "summary": "Get aggregated results from multiple sources.",
+        "description": "Request fields (passed as query parameters):\r\n\r\n- <b>Query</b> (required): text used to search Spotify tracks (track name, artist, etc.). Example: \"never gonna give you up\".\r\n- <b>Limit</b>: maximum items to request per source (1-50). Default 5.\r\n- <b>Topic</b>: topic/category sent to GNews (subscription supports topic-only searches). Example: \"technology\". If absent, news results are omitted.\r\n- <b>DateFrom</b> / <b>DateTo</b>: date range in `dd-MM-yyyy` format (e.g., 31-12-2023).\r\n- <b>GitHubOwner</b> and <b>GitHubRepo</b>: when both provided, fetch GitHub repository details (owner + repo name).\r\n- <b>SortBy</b>: which field to sort by. Allowed enum values: `date`, `source`, `relevance`. Currently only `date` is applied.\r\n- <b>SortOrder</b>: ordering direction. Allowed enum values: `desc`, `asc`. Default is `desc` (newest first).\r\n\r\nThe endpoint runs Spotify and (optionally) GNews and GitHub requests in parallel and returns a unified list of items.\r\nEach item includes `source`, `title`, optional `url`, optional `date`, and the raw provider JSON in `raw`.",
+        "parameters": [
+          {
+            "name": "Query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "GitHubOwner",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "GitHubRepo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DateFrom",
+            "in": "query",
+            "description": "Format: mm-dd-yyyy",
+            "schema": {
+              "type": "string",
+              "description": "Format: mm-dd-yyyy",
+              "format": "date"
+            }
+          },
+          {
+            "name": "DateTo",
+            "in": "query",
+            "description": "Format: mm-dd-yyyy",
+            "schema": {
+              "type": "string",
+              "description": "Format: mm-dd-yyyy",
+              "format": "date"
+            }
+          },
+          {
+            "name": "Topic",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortBy"
+            }
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GitHub": {
+      "get": {
+        "tags": [
+          "GitHub"
+        ],
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/gnews/search": {
+      "get": {
+        "tags": [
+          "GNews"
+        ],
+        "parameters": [
+          {
+            "name": "topic",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/spotify/search": {
+      "get": {
+        "tags": [
+          "Spotify"
+        ],
+        "parameters": [
+          {
+            "name": "Query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SortBy": {
+        "enum": [
+          "date"
+        ],
+        "type": "string"
+      },
+      "SortOrder": {
+        "enum": [
+          "desc",
+          "asc"
+        ],
+        "type": "string"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Aggregation"
+    },
+    {
+      "name": "GitHub"
+    },
+    {
+      "name": "GNews"
+    },
+    {
+      "name": "Spotify"
+    },
+    {
+      "name": "Statistics"
+    }
+  ]
+}

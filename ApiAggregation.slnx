@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/DBScript/">
+    <File Path="DB.sql" />
+  </Folder>
+  <Project Path="ApiAggregation/ApiAggregation.csproj" />
+  <Project Path="ExportStatisticsTool/ExportStatisticsTool.csproj" Id="3f31280c-8672-4c48-a5b5-477aa9a64cb3" />
+  <Project Path="Shared/Shared.csproj" Id="f86fd260-e61c-403b-814a-183cae0f4e8b" />
+  <Project Path="UnitTests/UnitTests.csproj" Id="86b84afc-6dde-42ec-a6a5-9ca551482909" />
+</Solution>
